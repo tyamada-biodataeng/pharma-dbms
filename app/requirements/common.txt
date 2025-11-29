@@ -1,0 +1,14 @@
+structlog
+psycopg[binary]
+uvicorn[standard]
+gunicorn
+django-auditlog
+django-environ
+django-extensions
+django-filter
+django-guardian
+django-import-export[all]
+django-ninja
+django-silk
+django-structlog
+rdkit
