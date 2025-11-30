@@ -16,7 +16,8 @@ services:
     image: tyamadabiodataeng/pharma-dbms-django
     container_name: django
     build:
-      context: ./dockerfiles/django
+      context: ./app
+      dockerfile: ../dockerfiles/django/Dockerfile
       args:
         DIR_WORK: "/usr/src"
         REQ_DIR: "requirements"
@@ -35,7 +36,9 @@ services:
   nginx:
     image: tyamadabiodataeng/pharma-dbms-nginx
     container_name: nginx
-    build: ./dockerfiles/nginx
+    build: 
+      context: ./nginx
+      dockerfile: ../dockerfiles/nginx/Dockerfile
     volumes:
       - ./app/static:/usr/src/static
       - ./app/media:/usr/src/media
@@ -47,7 +50,8 @@ services:
       - pharma-db-network
   jupyter:
     build: 
-      context: ./dockerfiles/jupyter
+      context: ./notebooks
+      dockerfile: ../dockerfiles/jupyter/Dockerfile
       args:
         DIR_WORK: "/usr/src/"
         REQ_TXT: "requirements.txt"
