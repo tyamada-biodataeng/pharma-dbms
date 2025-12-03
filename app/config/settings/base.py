@@ -4,25 +4,11 @@ Django settings for config project.
 
 from pathlib import Path
 
-import environ
+from django.utils.translation import gettext_lazy as _
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-env = environ.Env()
-env.read_env(str(BASE_DIR / 'config' / '.env'))
-
-
-# Quick-start development settings - unsuitable for production
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY', default='django-secretkey')
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # Application definition
@@ -63,18 +49,6 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'config.wsgi.application'
-
-
-# Database
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 
 # Password validation
 
@@ -96,9 +70,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ja'
 
-TIME_ZONE = 'UTC'
+LANGUAGES = [
+    ('ja', _('日本語')),
+    ('en', _('English')),
+]
+
+TIME_ZONE = 'Asia/Tokyo'
 
 USE_I18N = True
 
@@ -109,6 +88,25 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATIC_ROOT = BASE_DIR / 'static'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'staticfiles',
+]
+
+
+# Uploaded files
+
+MEDIA_URL = 'media/'
+
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
 # Default primary key field type
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Auditlog
+
+AUDITLOG_INCLUDE_ALL_MODELS = True
