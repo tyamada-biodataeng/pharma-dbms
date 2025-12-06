@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+set -e
+
+psql -v ON_ERROR_STOP=1 \
+  --username "$POSTGRES_USER" \
+  --dbname "$POSTGRES_DB" <<-EOSQL
+
+CREATE ROLE ${DATABASE_USER}
+    LOGIN
+    PASSWORD '${DATABASE_PASSWORD}';
+
+CREATE SCHEMA IF NOT EXISTS ${DATABASE_SCHEMA} AUTHORIZATION ${DATABASE_USER};
+
+ALTER ROLE ${DATABASE_USER} SET search_path = ${DATABASE_SCHEMA}, public;
+
+GRANT USAGE, CREATE ON SCHEMA ${DATABASE_SCHEMA} TO ${DATABASE_USER};
+GRANT ALL PRIVILEGES ON ALL TABLES    IN SCHEMA ${DATABASE_SCHEMA} TO ${DATABASE_USER};
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA ${DATABASE_SCHEMA} TO ${DATABASE_USER};
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA ${DATABASE_SCHEMA}
+    GRANT ALL ON TABLES    TO ${DATABASE_USER};
+ALTER DEFAULT PRIVILEGES IN SCHEMA ${DATABASE_SCHEMA}
+    GRANT ALL ON SEQUENCES TO ${DATABASE_USER};
+
+DO \$\$
+DECLARE
+    s text;
+    app_user text := '${DATABASE_USER}';
+BEGIN
+    FOR s IN
+        SELECT nspname
+        FROM pg_namespace
+        WHERE nspname NOT IN ('pg_catalog', 'information_schema', '${DATABASE_SCHEMA}')
+          AND nspname NOT LIKE 'pg_toast%%'
+    LOOP
+        EXECUTE format('GRANT USAGE ON SCHEMA %I TO %I;', s, app_user);
+        EXECUTE format(
+            'GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA %I TO %I;',
+            s, app_user
+        );
+        EXECUTE format(
+            'GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA %I TO %I;',
+            s, app_user
+        );
+        EXECUTE format(
+            'ALTER DEFAULT PRIVILEGES IN SCHEMA %I GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO %I;',
+            s, app_user
+        );
+        EXECUTE format(
+            'ALTER DEFAULT PRIVILEGES IN SCHEMA %I GRANT USAGE, SELECT ON SEQUENCES TO %I;',
+            s, app_user
+        );
+    END LOOP;
+END
+\$\$;
+
+EOSQL

@@ -10,6 +10,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./postgres/initdb:/docker-entrypoint-initdb.d
     networks:
       - pharma-db-network
   django:
@@ -28,7 +29,7 @@ services:
     expose:
       - "8000"
     env_file:
-      - ./app/.env.dev
+      - ./app/config/.env.dev
     depends_on:
       - postgres
     networks:
