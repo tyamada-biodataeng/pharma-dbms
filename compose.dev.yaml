@@ -23,7 +23,9 @@ services:
         DIR_WORK: "/usr/src"
         ENV_YAML: "environment.dev.yaml"
         VENV: "dbms-django-dev"
-    command: mamba run --name dbms-django-dev gunicorn config.wsgi.prod:application --bind 0.0.0.0:8000
+    command: >
+      sh -c "mamba run --name dbms-django-dev python manage.py collectstatic --noinput &&
+             mamba run --name dbms-django-dev gunicorn config.wsgi.dev:application --bind 0.0.0.0:8000"
     volumes:
       - ./app:/usr/src
     expose:
