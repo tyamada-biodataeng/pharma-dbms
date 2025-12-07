@@ -1,3 +1,0 @@
-django==5.2
--r common.txt
-sentry-sdk[django]

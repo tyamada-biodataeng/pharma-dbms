@@ -1,0 +1,36 @@
+name: dbms-jupyter
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13
+  - black
+  - ruff
+  - mypy
+  - tox
+  - structlog
+  - pytest
+  - pytest-snapshot
+  - line_profiler
+  - memory_profiler
+  - mkdocs
+  - numpy
+  - matplotlib
+  - openpyxl
+  - python-dotenv
+  - psycopg
+  - sqlalchemy
+  - pandas
+  - polars-lts-cpu
+  - ibis-framework
+  - seaborn
+  - requests
+  - jupyterlab
+  - ipywidgets
+  - ipympl
+  - ipytest
+  - pygwalker
+  - pydantic
+  - sqlmodel
+  - sqlacodegen
+  - pandera
+  - rdkit
