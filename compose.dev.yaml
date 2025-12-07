@@ -23,7 +23,7 @@ services:
         DIR_WORK: "/usr/src"
         REQ_DIR: "requirements"
         REQ_TXT: "dev.txt"
-    command: mamba run --name bioinfo gunicorn config.wsgi.prod:application --bind 0.0.0.0:8000
+    command: gunicorn config.wsgi.prod:application --bind 0.0.0.0:8000
     volumes:
       - ./app:/usr/src
     expose:
