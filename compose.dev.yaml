@@ -21,9 +21,9 @@ services:
       dockerfile: ../dockerfiles/django/Dockerfile
       args:
         DIR_WORK: "/usr/src"
-        REQ_DIR: "requirements"
-        REQ_TXT: "dev.txt"
-    command: gunicorn config.wsgi.prod:application --bind 0.0.0.0:8000
+        ENV_YAML: "environment.dev.yaml"
+        VENV: "dbms-django-dev"
+    command: mamba run --name dbms-django-dev gunicorn config.wsgi.prod:application --bind 0.0.0.0:8000
     volumes:
       - ./app:/usr/src
     expose:
@@ -54,11 +54,12 @@ services:
       context: ./notebooks
       dockerfile: ../dockerfiles/jupyter/Dockerfile
       args:
-        DIR_WORK: "/usr/src/"
-        REQ_TXT: "requirements.txt"
+        DIR_WORK: "/usr/src"
+        ENV_YAML: "environment.yaml"
+        VENV: "dbms-jupyter"
     image: tyamadabiodataeng/pharma-dbms-jupyter
     container_name: jupyter
-    command: jupyter lab --ip=0.0.0.0 --allow-root --LabApp.token=''
+    command: mamba run --name dbms-jupyter jupyter lab --ip=0.0.0.0 --allow-root --LabApp.token=''
     ports:
      - "8888:8888"
     volumes:

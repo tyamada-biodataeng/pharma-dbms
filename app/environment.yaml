@@ -1,0 +1,22 @@
+name: dbms-django
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13
+  - django=5.2
+  - django-ninja
+  - structlog
+  - psycopg
+  - uvicorn
+  - gunicorn
+  - django-auditlog
+  - django-environ
+  - django-extensions
+  - django-filter
+  - django-guardian
+  - django-import-export
+  - django-ninja
+  - django-silk
+  - django-structlog
+  - rdkit
+  - sentry-sdk
