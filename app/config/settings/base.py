@@ -126,3 +126,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Auditlog
 
 AUDITLOG_INCLUDE_ALL_MODELS = True
+AUDITLOG_LOGENTRY_MODEL = 'auditlog.LogEntry'
