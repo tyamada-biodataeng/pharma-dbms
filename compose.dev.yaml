@@ -9,10 +9,10 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_dev_data:/var/lib/postgresql/data
       - ./postgres/initdb:/docker-entrypoint-initdb.d
     networks:
-      - pharma-db-network
+      - pharma-db-dev-network
   django:
     image: tyamadabiodataeng/pharma-dbms-django-dev
     container_name: django
@@ -35,7 +35,7 @@ services:
     depends_on:
       - postgres
     networks:
-      - pharma-db-network
+      - pharma-db-dev-network
   nginx:
     image: tyamadabiodataeng/pharma-dbms-nginx
     container_name: nginx
@@ -50,7 +50,7 @@ services:
     depends_on:
       - django
     networks:
-      - pharma-db-network
+      - pharma-db-dev-network
   jupyter:
     build: 
       context: ./notebooks
@@ -71,11 +71,11 @@ services:
     depends_on:
       - nginx
     networks:
-      - pharma-db-network
+      - pharma-db-dev-network
 
 networks:
-  pharma-db-network:
+  pharma-db-dev-network:
     driver: bridge
 
 volumes:
-  postgres_data:
+  postgres_dev_data:
