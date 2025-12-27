@@ -1,7 +1,10 @@
 services:
   postgres:
-    image: postgres:17
+    image: tyamadabiodataeng/pharma-dbms-postgres-dev
     container_name: postgres
+    build:
+      context: ./postgres
+      dockerfile: ../dockerfiles/postgres/Dockerfile
     environment:
       - TZ=Asia/Tokyo
     env_file:
@@ -9,10 +12,9 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./postgres/initdb:/docker-entrypoint-initdb.d
+      - pharmadb_dev_pg_data:/var/lib/postgresql/data
     networks:
-      - pharma-db-network
+      - pharmadb-dev-network
   django:
     image: tyamadabiodataeng/pharma-dbms-django-dev
     container_name: django
@@ -23,7 +25,9 @@ services:
         DIR_WORK: "/usr/src"
         ENV_YAML: "environment.dev.yaml"
         VENV: "dbms-django-dev"
-    command: mamba run --name dbms-django-dev gunicorn config.wsgi.prod:application --bind 0.0.0.0:8000
+    command: >
+      sh -c "mamba run --name dbms-django-dev python manage.py collectstatic --noinput &&
+             mamba run --name dbms-django-dev gunicorn config.wsgi.dev:application --bind 0.0.0.0:8000"
     volumes:
       - ./app:/usr/src
     expose:
@@ -33,7 +37,7 @@ services:
     depends_on:
       - postgres
     networks:
-      - pharma-db-network
+      - pharmadb-dev-network
   nginx:
     image: tyamadabiodataeng/pharma-dbms-nginx
     container_name: nginx
@@ -48,7 +52,7 @@ services:
     depends_on:
       - django
     networks:
-      - pharma-db-network
+      - pharmadb-dev-network
   jupyter:
     build: 
       context: ./notebooks
@@ -69,11 +73,11 @@ services:
     depends_on:
       - nginx
     networks:
-      - pharma-db-network
+      - pharmadb-dev-network
 
 networks:
-  pharma-db-network:
+  pharmadb-dev-network:
     driver: bridge
 
 volumes:
-  postgres_data:
+  pharmadb_dev_pg_data:
