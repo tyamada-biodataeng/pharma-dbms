@@ -5,9 +5,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from ninja import NinjaAPI
+
+api = NinjaAPI()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', api.urls),
     path('silk/', include('silk.urls', namespace='silk')),
 ]
 
