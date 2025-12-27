@@ -1,7 +1,10 @@
 services:
   postgres:
-    image: postgres:17
+    image: tyamadabiodataeng/pharma-dbms-postgres
     container_name: postgres
+    build:
+      context: ./postgres
+      dockerfile: ../dockerfiles/postgres/Dockerfile
     environment:
       - TZ=Asia/Tokyo
     env_file:
@@ -9,10 +12,9 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./postgres/initdb:/docker-entrypoint-initdb.d
+      - pharmadb_pg_data:/var/lib/postgresql/data
     networks:
-      - pharma-db-network
+      - pharmadb-network
   django:
     image: tyamadabiodataeng/pharma-dbms-django
     container_name: django
@@ -33,7 +35,7 @@ services:
     depends_on:
       - postgres
     networks:
-      - pharma-db-network
+      - pharmadb-network
   nginx:
     image: tyamadabiodataeng/pharma-dbms-nginx
     container_name: nginx
@@ -48,7 +50,7 @@ services:
     depends_on:
       - django
     networks:
-      - pharma-db-network
+      - pharmadb-network
   jupyter:
     build: 
       context: ./notebooks
@@ -69,11 +71,11 @@ services:
     depends_on:
       - nginx
     networks:
-      - pharma-db-network
+      - pharmadb-network
 
 networks:
-  pharma-db-network:
+  pharmadb-network:
     driver: bridge
 
 volumes:
-  postgres_data:
+  pharmadb_pg_data:
