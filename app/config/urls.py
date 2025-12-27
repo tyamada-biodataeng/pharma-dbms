@@ -18,6 +18,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', api.urls),
     path('silk/', include('silk.urls', namespace='silk')),
+    path('', include('accounts.urls')),
 ]
 
 if settings.DEBUG:

@@ -83,6 +83,12 @@ AUTHENTICATION_BACKENDS = (
     'guardian.backends.ObjectPermissionBackend',
 )
 
+LOGIN_URL = 'accounts:login'
+
+LOGIN_REDIRECT_URL = 'accounts:index'
+
+LOGOUT_REDIRECT_URL = 'accounts:login'
+
 
 # Internationalization
 
