@@ -7,7 +7,12 @@ from django.contrib import admin
 from django.urls import include, path
 from ninja import NinjaAPI
 
-api = NinjaAPI()
+if settings.DEBUG:
+    api_title = 'Pharma DBMS dev API'
+else:
+    api_title = 'Pharma DBMS API'
+
+api = NinjaAPI(title=api_title, version='1.0.0')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
