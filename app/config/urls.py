@@ -4,6 +4,7 @@ URL configuration for config project.
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
 from django.urls import include, path
 from ninja import NinjaAPI
 
@@ -12,7 +13,11 @@ if settings.DEBUG:
 else:
     api_title = 'Pharma DBMS API'
 
-api = NinjaAPI(title=api_title, version='1.0.0')
+api = NinjaAPI(
+    title=api_title,
+    version='1.0.0',
+    docs_decorator=login_required,
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
