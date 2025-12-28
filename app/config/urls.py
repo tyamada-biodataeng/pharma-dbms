@@ -7,6 +7,13 @@ from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.urls import include, path
 from ninja import NinjaAPI
+from ninja.security import HttpBearer
+
+
+class GlobalAuth(HttpBearer):
+    def authenticate(self, request, token):
+        if token == 'supersecret':
+            return token
 
 if settings.DEBUG:
     api_title = 'Pharma DBMS dev API'
@@ -16,6 +23,7 @@ else:
 api = NinjaAPI(
     title=api_title,
     version='1.0.0',
+    auth=GlobalAuth(),
     docs_decorator=login_required,
 )
 
