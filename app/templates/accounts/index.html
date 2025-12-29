@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}ホーム{% endblock title %}
+
+{% block main %}
+
+<h2 class="text-center my-5">ホーム</h2>
+<div class="row">
+    <div class="col-sm-6 mb-3 mb-sm-0">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title text-center text-bg-dark py-3">Admin</h5>
+                <p class="card-text text-center my-3">管理画面でデータを閲覧・編集する</p>
+                <div class="text-center">
+                    <a href="{% url 'admin:index' %}" class="btn btn-dark">移動</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title text-center text-bg-dark py-3">Swagger UI</h5>
+                <p class="card-text text-center my-3">APIでデータを閲覧・編集する</p>
+                <div class="text-center">
+                    <a href="{% url 'api-1.0.0:openapi-view' %}" class="btn btn-dark">移動</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="text-center">
+    <form method="POST" action="{% url 'accounts:logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-dark my-3">ログアウト</button>
+    </form>
+</div>
+
+{% endblock main %}

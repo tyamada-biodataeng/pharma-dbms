@@ -25,6 +25,7 @@ dependencies:
   - django-debug-toolbar
   - pytest
   - pytest-django
+  - pytest-factoryboy
   - pytest-randomly
   - pytest-cov
   - factory_boy
