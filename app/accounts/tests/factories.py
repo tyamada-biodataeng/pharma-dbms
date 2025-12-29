@@ -1,4 +1,4 @@
-from factory import LazyAttribute
+from factory import LazyAttribute, post_generation
 from factory.django import DjangoModelFactory
 
 from accounts.models import CustomUser
@@ -8,7 +8,6 @@ class UserFactory(DjangoModelFactory):
 
     username = 'user'
     email = LazyAttribute(lambda u: f'{u.username}@example.com')
-    password = 'password'
     is_active = True
     is_staff = False
     is_superuser = False
@@ -16,6 +15,11 @@ class UserFactory(DjangoModelFactory):
     class Meta:
         model = CustomUser
         django_get_or_create = ('username',)
+
+    @post_generation
+    def password(self, create, extracted, **kwargs):
+        password = extracted or 'password'
+        self.set_password(password)
 
 
 class SuperUserFactory(UserFactory):
