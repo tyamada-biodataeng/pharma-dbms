@@ -28,10 +28,9 @@ legacy_tox_ini = """
 """
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "config.settings.development"
+DJANGO_SETTINGS_MODULE = "config.settings.dev"
 python_files = ["test_*.py"]
 addopts = "-v --reuse-db"
-testpaths = ["tests"]
 django_debug_mode = true
 
 [tool.ruff]
