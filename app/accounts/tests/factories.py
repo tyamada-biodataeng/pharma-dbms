@@ -15,11 +15,14 @@ class UserFactory(DjangoModelFactory):
     class Meta:
         model = CustomUser
         django_get_or_create = ('username',)
+        skip_postgeneration_save = True
 
     @post_generation
     def password(self, create, extracted, **kwargs):
         password = extracted or 'password'
         self.set_password(password)
+        if create:
+            self.save()
 
 
 class SuperUserFactory(UserFactory):
