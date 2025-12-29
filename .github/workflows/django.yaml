@@ -43,10 +43,14 @@ jobs:
           echo 'waiting for postgres...'
           sleep 1
         done
-    - name: Install Dependencies
-      run: |
-        mamba update -y -c conda-forge mamba
-        mamba env create --file environment.dev.yaml
+    - name: Set up Miniforge (Mambaforge)
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        auto-activate-base: false
+        python-version: ${{ matrix.python-version }}
+        environment-file: app/environment.dev.yaml
+        activate-environment: dbms-django-dev
+        miniconda-variant: Mambaforge
     - name: Run Tests
       run: |
         mamba run --name dbms-django-dev pytest
