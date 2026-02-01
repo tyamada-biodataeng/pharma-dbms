@@ -41,6 +41,13 @@ jobs:
           sleep 1
         done
     - name: Run Tests
+      env:
+        DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+        DATABASE_USER: ${{ secrets.DATABASE_USER }}
+        DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+        DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
+        DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+        DATABASE_SCHEMA: ${{ secrets.DATABASE_SCHEMA }}
       run: |
         mamba run --name dbms-django-dev python manage.py migrate
         mamba run --name dbms-django-dev pytest
