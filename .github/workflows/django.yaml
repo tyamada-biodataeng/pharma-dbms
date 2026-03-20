@@ -13,6 +13,10 @@ jobs:
     services:
       postgres:
         image: postgres:17
+        environment:
+          POSTGRES_DB: ${{ secrets.DATABASE_NAME }}
+          POSTGRES_USER: ${{ secrets.DATABASE_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
         ports: ['5432:5432']
         options: >-
           --health-cmd pg_isready
@@ -36,10 +40,160 @@ jobs:
         miniconda-variant: Mambaforge
     - name: Wait for Postgres
       run: |
-        until pg_isready -h localhost -p 5432 -U postgres; do
+        until pg_isready -h ${{ secrets.DATABASE_HOST }} -p ${{ secrets.DATABASE_PORT }} -U ${{ secrets.DATABASE_USER }}; do
           echo 'waiting for postgres...'
           sleep 1
         done
+    - name: Prepare DB roles & schemas
+      env:
+        DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+        DATABASE_USER: ${{ secrets.DATABASE_USER }}
+        DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+        DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
+        DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+        DATABASE_SCHEMA: ${{ secrets.DATABASE_SCHEMA }}
+      run: |
+        mamba run --name dbms-django-dev python - <<'PY'
+        import os
+        from psycopg import connect, sql
+
+        dbname = os.environ["DATABASE_NAME"]
+        user = os.environ["DATABASE_USER"]
+        password = os.environ["DATABASE_PASSWORD"]
+        host = os.environ["DATABASE_HOST"]
+        port = os.environ["DATABASE_PORT"]
+        schema = os.environ["DATABASE_SCHEMA"]
+        test_user = f"{user}_test"
+        test_schema = f"test_{schema}"
+
+        conn = connect(
+            host=host,
+            port=port,
+            dbname=dbname,
+            user=user,
+            password=password,
+        )
+        conn.autocommit = True
+
+        with conn.cursor() as cur:
+            # Verify role/schema existence; create roles/schemas if missing.
+            cur.execute(
+                """
+                SELECT 1 FROM pg_roles WHERE rolname = %(rolename)s
+                """,
+                {"rolename": user},
+            )
+            has_user = cur.fetchone() is not None
+
+            cur.execute(
+                """
+                SELECT 1 FROM pg_roles WHERE rolname = %(rolename)s
+                """,
+                {"rolename": test_user},
+            )
+            has_test_user = cur.fetchone() is not None
+
+            cur.execute(
+                """
+                SELECT schema_name FROM information_schema.schemata WHERE schema_name = %(schema)s
+                """,
+                {"schema": schema},
+            )
+            has_schema = cur.fetchone() is not None
+
+            cur.execute(
+                """
+                SELECT schema_name FROM information_schema.schemata WHERE schema_name = %(schema)s
+                """,
+                {"schema": test_schema},
+            )
+            has_test_schema = cur.fetchone() is not None
+
+            print(
+                "DB check:",
+                {
+                    "user": has_user,
+                    "test_user": has_test_user,
+                    "schema": has_schema,
+                    "test_schema": has_test_schema,
+                },
+            )
+
+            # Create test role if missing (needed because config.settings.test uses {DATABASE_USER}_test).
+            cur.execute(
+                """
+                DO $$
+                BEGIN
+                  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = %(rolename)s) THEN
+                    EXECUTE format('CREATE ROLE %I LOGIN CREATEDB PASSWORD %L', %(rolename)s, %(password)s);
+                  END IF;
+                END
+                $$;
+                """,
+                {"rolename": test_user, "password": password},
+            )
+
+            # Create schemas if missing.
+            cur.execute(
+                sql.SQL("CREATE SCHEMA IF NOT EXISTS {schema} AUTHORIZATION {role}").format(
+                    schema=sql.Identifier(schema),
+                    role=sql.Identifier(user),
+                )
+            )
+            cur.execute(
+                sql.SQL("CREATE SCHEMA IF NOT EXISTS {schema} AUTHORIZATION {role}").format(
+                    schema=sql.Identifier(test_schema),
+                    role=sql.Identifier(test_user),
+                )
+            )
+
+            # Grant privileges needed for migrations/tests.
+            # (Django connects with search_path set to {schema} + public, and test_{schema} + public)
+            for (target_schema, target_role) in [(schema, user), (test_schema, test_user)]:
+                cur.execute(
+                    sql.SQL("ALTER ROLE {role} SET search_path = {schema}, public").format(
+                        role=sql.Identifier(target_role),
+                        schema=sql.Identifier(target_schema),
+                    )
+                )
+                cur.execute(
+                    sql.SQL("GRANT USAGE, CREATE ON SCHEMA {schema} TO {role}").format(
+                        schema=sql.Identifier(target_schema),
+                        role=sql.Identifier(target_role),
+                    )
+                )
+                cur.execute(
+                    sql.SQL("GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA {schema} TO {role}").format(
+                        schema=sql.Identifier(target_schema),
+                        role=sql.Identifier(target_role),
+                    )
+                )
+                cur.execute(
+                    sql.SQL("GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA {schema} TO {role}").format(
+                        schema=sql.Identifier(target_schema),
+                        role=sql.Identifier(target_role),
+                    )
+                )
+                cur.execute(
+                    sql.SQL(
+                        "ALTER DEFAULT PRIVILEGES IN SCHEMA {schema} GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO {role}"
+                    ).format(
+                        schema=sql.Identifier(target_schema),
+                        role=sql.Identifier(target_role),
+                    )
+                )
+                cur.execute(
+                    sql.SQL(
+                        "ALTER DEFAULT PRIVILEGES IN SCHEMA {schema} GRANT USAGE, SELECT ON SEQUENCES TO {role}"
+                    ).format(
+                        schema=sql.Identifier(target_schema),
+                        role=sql.Identifier(target_role),
+                    )
+                )
+
+        cur.close()
+        conn.close()
+        PY
     - name: Run Tests
       env:
         DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
