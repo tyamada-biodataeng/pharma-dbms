@@ -195,6 +195,7 @@ jobs:
         conn.close()
         PY
     - name: Run Tests
+      working-directory: app
       env:
         DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
         DATABASE_USER: ${{ secrets.DATABASE_USER }}
