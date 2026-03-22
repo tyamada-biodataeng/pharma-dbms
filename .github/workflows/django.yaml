@@ -39,6 +39,7 @@ jobs:
         environment-file: app/environment.dev.yaml
         activate-environment: dbms-django-dev
         miniforge-variant: Mambaforge
+        miniforge-version: "26.1.1-3"
         use-mamba: true
     - name: Wait for Postgres
       run: |
