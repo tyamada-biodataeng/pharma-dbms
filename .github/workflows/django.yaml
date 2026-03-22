@@ -53,7 +53,7 @@ jobs:
         DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
         DATABASE_SCHEMA: ${{ secrets.DATABASE_SCHEMA }}
       run: |
-        mamba run --name dbms-django-dev python - <<'PY'
+        conda run --name dbms-django-dev python - <<'PY'
         import os
         from psycopg import connect, sql
 
