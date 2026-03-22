@@ -8,6 +8,6 @@ DATABASES = {
         'PASSWORD': env('DATABASE_PASSWORD'),
         'HOST': env('DATABASE_HOST', default='postgres'),
         'PORT': env('DATABASE_PORT', default='5432'),
-        'OPTIONS': {'options': f'-c search_path=test_{env("DATABASE_SCHEMA", default="public")},public'},
+        'OPTIONS': {'options': f'-c search_path=test_{env("DATABASE_SCHEMA")},public'},
     }
 }
