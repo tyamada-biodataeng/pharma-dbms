@@ -40,7 +40,7 @@ jobs:
         activate-environment: dbms-django-dev
     - name: Wait for Postgres
       run: |
-        until pg_isready -h localhost -p 5432 -U "${{ secrets.POSTGRES_USER }}"; do
+        until pg_isready -h "${{ secrets.DATABASE_HOST }}" -p "${{ secrets.DATABASE_PORT }}" -U "${{ secrets.POSTGRES_USER }}"; do
           echo 'waiting for postgres...'
           sleep 1
         done
