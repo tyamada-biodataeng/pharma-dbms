@@ -38,10 +38,11 @@ jobs:
         python-version: ${{ matrix.python-version }}
         environment-file: app/environment.dev.yaml
         activate-environment: dbms-django-dev
-        miniconda-variant: Mambaforge
+        miniforge-variant: Mambaforge
+        use-mamba: true
     - name: Wait for Postgres
       run: |
-        until pg_isready -h ${{ secrets.DATABASE_HOST }} -p ${{ secrets.DATABASE_PORT }} -U ${{ secrets.DATABASE_USER }}; do
+        until pg_isready -h localhost -p 5432 -U "${{ secrets.POSTGRES_USER }}"; do
           echo 'waiting for postgres...'
           sleep 1
         done
