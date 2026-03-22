@@ -203,5 +203,5 @@ jobs:
         DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
         DATABASE_SCHEMA: ${{ secrets.DATABASE_SCHEMA }}
       run: |
-        mamba run --name dbms-django-dev python manage.py migrate
-        mamba run --name dbms-django-dev pytest
+        conda run --name dbms-django-dev python manage.py migrate
+        conda run --name dbms-django-dev pytest
