@@ -18,6 +18,7 @@ dependencies:
   - django-silk
   - django-structlog
   - rdkit
+  - uuid6
   - black
   - ruff
   - mypy
