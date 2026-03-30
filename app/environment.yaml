@@ -20,3 +20,4 @@ dependencies:
   - django-structlog
   - rdkit
   - sentry-sdk
+  - uuid6
