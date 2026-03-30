@@ -44,3 +44,6 @@ lint.select = [
 ]
 line-length = 120
 src = ['.']
+
+[tool.ruff.format]
+quote-style = 'single'
