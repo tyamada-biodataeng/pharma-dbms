@@ -26,7 +26,7 @@ class CustomBaseModel(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid6.uuid7, editable=False)
     created_at = CreationDateTimeField(_('created at'))
     updated_at = ModificationDateTimeField(_('updated at'))
-    deleted_at = models.DateTimeField(null=True, blank=True, default=None)
+    deleted_at = models.DateTimeField(null=True, blank=True, default=None, db_index=True)
 
     def save(self, **kwargs):
         self.update_modified = kwargs.pop('update_modified', getattr(self, 'update_modified', True))
