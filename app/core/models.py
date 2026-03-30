@@ -49,7 +49,7 @@ class CustomBaseModel(models.Model):
             cls._meta.constraints.append(
                 models.UniqueConstraint(
                     fields=[*cls.unique_together_with_deleted_at, 'deleted_at'],
-                    condition=models.Q(deleted_at__isnull=True),  # 生きているデータのみ
+                    condition=models.Q(deleted_at__isnull=True),
                     name=constraint_name,
                 )
             )
