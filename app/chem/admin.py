@@ -13,11 +13,11 @@ class ProjectDescriptionAdmin(admin.ModelAdmin):
     model = ProjectDescription
     list_display = (
         'project',
-        'description',
+        'body',
     )
     search_fields = (
         'project__name',
-        'description',
+        'body',
     )
 
 
@@ -31,11 +31,11 @@ class CompoundDescriptionAdmin(admin.ModelAdmin):
     model = CompoundDescription
     list_display = (
         'compound',
-        'description',
+        'body',
     )
     search_fields = (
         'compound__name',
-        'description',
+        'body',
     )
 
 

@@ -1,32 +1,34 @@
 from django.db import models
 
+from core.models import CustomBaseModel
 
-class Project(models.Model):
+
+class Project(CustomBaseModel):
     name = models.CharField(max_length=50)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    deleted_at = models.DateTimeField(null=True, blank=True, default=None)
+
+    class Meta:
+        db_table = 'project'
 
 
-class ProjectDescription(models.Model):
+class ProjectDescription(CustomBaseModel):
     project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='description')
-    description = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    deleted_at = models.DateTimeField(null=True, blank=True, default=None)
+    body = models.TextField()
+
+    class Meta:
+        db_table = 'project_description'
 
 
-class Compound(models.Model):
+class Compound(CustomBaseModel):
     name = models.CharField(max_length=100)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='compounds')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    deleted_at = models.DateTimeField(null=True, blank=True, default=None)
+
+    class Meta:
+        db_table = 'compound'
 
 
-class CompoundDescription(models.Model):
+class CompoundDescription(CustomBaseModel):
     compound = models.OneToOneField(Compound, on_delete=models.CASCADE, related_name='description')
-    description = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    deleted_at = models.DateTimeField(null=True, blank=True, default=None)
+    body = models.TextField()
+
+    class Meta:
+        db_table = 'compound_description'
