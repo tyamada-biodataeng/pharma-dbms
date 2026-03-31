@@ -28,11 +28,13 @@ class SoftDeleteManager(models.Manager):
 
 
 class CustomBaseModel(models.Model):
-    objects = SoftDeleteManager()
     id = models.UUIDField(primary_key=True, default=uuid6.uuid7, editable=False)
     created_at = CreationDateTimeField(_('created at'))
     updated_at = ModificationDateTimeField(_('updated at'))
-    deleted_at = models.DateTimeField(null=True, blank=True, default=None, db_index=True)
+    deleted_at = models.DateTimeField(_('deleted at'), null=True, blank=True, default=None, db_index=True)
+
+    objects = SoftDeleteManager()
+
     unique_together_with_deleted_at: List[str] = []
 
     def save(self, **kwargs):
