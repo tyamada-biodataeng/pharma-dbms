@@ -1,4 +1,4 @@
-import uuid6
+from app.core.models import CustomBaseModel, SoftDeleteQuerySet
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
@@ -8,7 +8,19 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
-class CustomUserManager(BaseUserManager):
+class CustomUserQuerySet(SoftDeleteQuerySet):
+    pass
+
+
+class CustomUserManager(BaseUserManager.from_queryset(CustomUserQuerySet)):
+    use_in_migrations = True
+
+    def get_queryset(self):
+        return super().get_queryset().alive()
+
+    def with_deleted(self):
+        return super().get_queryset()
+
     def create_user(self, username, email, password=None):
 
         if not username:
@@ -20,22 +32,22 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, username, email, password=None):
-        user = self.create_user(username=username, email=self.normalize_email(email), password=password)
+        user = self.create_user(
+            username=username,
+            email=self.normalize_email(email),
+            password=password,
+        )
         user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
         return user
 
 
-class CustomUser(AbstractBaseUser, PermissionsMixin):
-    id = models.UUIDField(default=uuid6.uuid7, primary_key=True, editable=False)
+class CustomUser(CustomBaseModel, AbstractBaseUser, PermissionsMixin):
     username = models.CharField(verbose_name=_('username'), max_length=20, unique=True)
     email = models.EmailField(verbose_name=_('email address'), max_length=254, blank=True)
     is_active = models.BooleanField(verbose_name=_('active'), default=True)
     is_staff = models.BooleanField(verbose_name=_('staff'), default=False)
-    created_at = models.DateTimeField(verbose_name=_('created at'), auto_now_add=True)
-    updated_at = models.DateTimeField(verbose_name=_('updated at'), auto_now=True)
-    deleted_at = models.DateTimeField(verbose_name=_('deleted at'), null=True, blank=True, default=None)
 
     objects = CustomUserManager()
 
