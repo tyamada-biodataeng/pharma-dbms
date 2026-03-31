@@ -45,12 +45,14 @@ class CustomUserManager(BaseUserManager.from_queryset(CustomUserQuerySet)):
 
 
 class CustomUser(CustomBaseModel, AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(verbose_name=_('username'), max_length=20, unique=True)
+    username = models.CharField(verbose_name=_('username'), max_length=20)
     email = models.EmailField(verbose_name=_('email address'), max_length=254, blank=True)
     is_active = models.BooleanField(verbose_name=_('active'), default=True)
     is_staff = models.BooleanField(verbose_name=_('staff'), default=False)
 
     objects = CustomUserManager()
+
+    unique_together_with_deleted_at = ['username']
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
