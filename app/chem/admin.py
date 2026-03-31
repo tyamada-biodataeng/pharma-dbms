@@ -5,37 +5,37 @@ from .models import Compound, CompoundDescription, Project, ProjectDescription
 
 class ProjectAdmin(admin.ModelAdmin):
     model = Project
-    list_display = ("name",)
-    search_fields = ("name",)
+    list_display = ('name',)
+    search_fields = ('name',)
 
 
 class ProjectDescriptionAdmin(admin.ModelAdmin):
     model = ProjectDescription
     list_display = (
-        "project",
-        "description",
+        'project',
+        'description',
     )
     search_fields = (
-        "project__name",
-        "description",
+        'project__name',
+        'description',
     )
 
 
 class CompoundAdmin(admin.ModelAdmin):
     model = Compound
-    list_display = ("name",)
-    search_fields = ("name",)
+    list_display = ('name',)
+    search_fields = ('name',)
 
 
 class CompoundDescriptionAdmin(admin.ModelAdmin):
     model = CompoundDescription
     list_display = (
-        "compound",
-        "description",
+        'compound',
+        'description',
     )
     search_fields = (
-        "compound__name",
-        "description",
+        'compound__name',
+        'description',
     )
 
 
