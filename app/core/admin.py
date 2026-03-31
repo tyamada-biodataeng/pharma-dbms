@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 class SoftDeleteAdmin(admin.ModelAdmin):
     actions = ['soft_delete_selected', 'restore_selected']
-    list_filter = (('deleted', admin.EmptyFieldListFilter),)
+    list_filter = (('deleted_at', admin.EmptyFieldListFilter),)
 
     def get_queryset(self, request):
         return self.model.objects.with_deleted()
@@ -29,10 +29,3 @@ class SoftDeleteAdmin(admin.ModelAdmin):
             % {'count': count, 'items': model_ngettext(self.opts, count)},
             messages.SUCCESS,
         )
-
-    list_filter = (
-        (
-            admin.EmptyFieldListFilter,
-            'deleted_at',
-        ),
-    )
