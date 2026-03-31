@@ -1,15 +1,17 @@
 from django.contrib import admin
 
+from core.admin import SoftDeleteAdmin
+
 from .models import Compound, CompoundDescription, Project, ProjectDescription
 
 
-class ProjectAdmin(admin.ModelAdmin):
+class ProjectAdmin(SoftDeleteAdmin):
     model = Project
     list_display = ('name',)
     search_fields = ('name',)
 
 
-class ProjectDescriptionAdmin(admin.ModelAdmin):
+class ProjectDescriptionAdmin(SoftDeleteAdmin):
     model = ProjectDescription
     list_display = (
         'project',
@@ -21,13 +23,13 @@ class ProjectDescriptionAdmin(admin.ModelAdmin):
     )
 
 
-class CompoundAdmin(admin.ModelAdmin):
+class CompoundAdmin(SoftDeleteAdmin):
     model = Compound
     list_display = ('name',)
     search_fields = ('name',)
 
 
-class CompoundDescriptionAdmin(admin.ModelAdmin):
+class CompoundDescriptionAdmin(SoftDeleteAdmin):
     model = CompoundDescription
     list_display = (
         'compound',

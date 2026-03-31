@@ -9,7 +9,11 @@ from django_extensions.db.fields import CreationDateTimeField, ModificationDateT
 
 class SoftDeleteQuerySet(models.QuerySet):
     def soft_delete(self):
-        return self.update(deleted_at=timezone.now())
+        now = timezone.now()
+        return self.update(deleted_at=now, updated_at=now)
+
+    def restore(self):
+        return self.update(deleted_at=None, updated_at=timezone.now())
 
     def alive(self):
         return self.filter(deleted_at__isnull=True)
