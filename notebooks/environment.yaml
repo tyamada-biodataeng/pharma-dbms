@@ -19,6 +19,7 @@ dependencies:
   - python-dotenv
   - psycopg
   - sqlalchemy
+  - sqlalchemy-utils
   - pandas
   - polars-lts-cpu
   - ibis-framework
