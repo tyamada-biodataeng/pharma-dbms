@@ -8,17 +8,17 @@ from sqlalchemy.orm import Session, sessionmaker
 
 def get_engine(dotenv_path: Union[Path, str]) -> engine.Engine:
     """
-    データベース接続のためのEngineを作成する。
+    Create a database connection Engine.
 
     Parameters
     ----------
     dotenv_path : Union[Path, str]
-        .envファイルのパス
+        Path to the .env file
 
     Returns
     -------
     engine : sqlalchemy.engine.Engine
-        データベース接続のためのEngine
+        Engine for database connection
     """
     config = dotenv_values(dotenv_path)
 
@@ -38,17 +38,17 @@ def get_engine(dotenv_path: Union[Path, str]) -> engine.Engine:
 
 def get_sessionmaker(dotenv_path: Union[Path, str]) -> sessionmaker:
     """
-    データベース接続のためのsessionmakerを作成する。
+    Create a sessionmaker for database connection.
 
     Parameters
     ----------
     dotenv_path : Union[Path, str]
-        .envファイルのパス
+        Path to the .env file
 
     Returns
     -------
     SessionLocal : sqlalchemy.orm.sessionmaker
-        データベース接続のためのSession
+        Sessionmaker for database connection
     """
     engine = get_engine(dotenv_path)
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -57,17 +57,17 @@ def get_sessionmaker(dotenv_path: Union[Path, str]) -> sessionmaker:
 
 def get_session(dotenv_path: Union[Path, str]) -> Session:
     """
-    データベース接続のためのSessionを作成する。
+    Create a database connection Session.
 
     Parameters
     ----------
     dotenv_path : Union[Path, str]
-        .envファイルのパス
+        Path to the .env file
 
     Returns
     -------
     session : sqlalchemy.orm.Session
-        データベース接続のためのSession
+        Session for database connection
     """
     sessionmaker = get_sessionmaker(dotenv_path)
     session = sessionmaker()
