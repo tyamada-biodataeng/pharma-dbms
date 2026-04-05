@@ -33,6 +33,7 @@ lint.select = [
     'E',  # pycodestyle Error
     'F',  # PyFlakes
     'W',  # pycodestyle Warning
+    'I',  # isort
 ]
 line-length = 120
 src = ['.']
