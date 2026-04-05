@@ -2,8 +2,8 @@ from pathlib import Path
 from typing import Union
 
 from dotenv import dotenv_values
-from sqlalchemy import create_engine, engine, URL
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy import URL, create_engine, engine
+from sqlalchemy.orm import Session, sessionmaker
 
 
 def get_engine(dotenv_path: Union[Path, str]) -> engine.Engine:
@@ -14,10 +14,10 @@ def get_engine(dotenv_path: Union[Path, str]) -> engine.Engine:
     ----------
     dotenv_path : Union[Path, str]
         .envファイルのパス
-    
+
     Returns
     -------
-    sqlalchemy.engine.Engine
+    engine : sqlalchemy.engine.Engine
         データベース接続のためのEngine
     """
     config = dotenv_values(dotenv_path)
@@ -32,7 +32,8 @@ def get_engine(dotenv_path: Union[Path, str]) -> engine.Engine:
         query={'options': f'-c search_path={config.get("DATABASE_SCHEMA", "public")}'},
     )
 
-    return create_engine(url_object)
+    engine = create_engine(url_object)
+    return engine
 
 
 def get_sessionmaker(dotenv_path: Union[Path, str]) -> sessionmaker:
@@ -43,7 +44,7 @@ def get_sessionmaker(dotenv_path: Union[Path, str]) -> sessionmaker:
     ----------
     dotenv_path : Union[Path, str]
         .envファイルのパス
-    
+
     Returns
     -------
     SessionLocal : sqlalchemy.orm.sessionmaker
@@ -62,7 +63,7 @@ def get_session(dotenv_path: Union[Path, str]) -> Session:
     ----------
     dotenv_path : Union[Path, str]
         .envファイルのパス
-    
+
     Returns
     -------
     session : sqlalchemy.orm.Session
