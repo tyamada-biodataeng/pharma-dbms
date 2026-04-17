@@ -25,7 +25,7 @@ services:
         DIR_WORK: "/usr/src"
         ENV_YAML: "environment.yaml"
         VENV: "dbms-django"
-    command: mamba run --name dbms-django gunicorn config.wsgi.prod:application --bind 0.0.0.0:8000
+    command: mamba run -n dbms-django gunicorn config.wsgi.prod:application --bind 0.0.0.0:8000
     volumes:
       - ./app:/usr/src
     expose:
@@ -61,7 +61,7 @@ services:
         VENV: "dbms-jupyter"
     image: tyamadabiodataeng/pharma-dbms-jupyter
     container_name: jupyter
-    command: mamba run --name dbms-jupyter jupyter lab --ip=0.0.0.0 --allow-root --LabApp.token=''
+    command: mamba run -n dbms-jupyter jupyter lab --ip=0.0.0.0 --allow-root --LabApp.token=''
     ports:
      - "8888:8888"
     volumes:

@@ -15,10 +15,10 @@ RUN apt-get update && \
 ARG ENV_YAML
 COPY ${ENV_YAML} ${DIR_WORK}/
 RUN mamba update -y -c conda-forge mamba && \
-    mamba env create --file ${ENV_YAML} && \
-    mamba clean -i -t -y
+    mamba env create -f ${ENV_YAML} && \
+    mamba clean -a -y
 
 USER ubuntu
 
 ARG VENV
-CMD ["mamba", "run", "--name", "${VENV}", "/bin/bash"]
+CMD ["mamba", "run", "-n", "${VENV}", "/bin/bash"]
