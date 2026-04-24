@@ -15,7 +15,6 @@ dependencies:
   - django-filter
   - django-guardian
   - django-import-export
-  - django-ninja
   - django-silk
   - django-structlog
   - rdkit
